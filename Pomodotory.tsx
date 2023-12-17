@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Button, Pressable, StyleSheet, Text, View } from "react-native";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import { Circle } from "react-native-svg";
+import styled from "styled-components";
 
 export const Pomodotory = () => {
   const [time, setTime] = useState("00 : 00");
@@ -25,13 +26,22 @@ export const Pomodotory = () => {
   }, [min, sec]);
 
   const buttonHandler = (props: string) => {
-    console.log(timer);
     if (props === "START" && timer === null) {
       const newTimer = setInterval(() => {
         setSec((sec) => sec - 1);
       }, 1000);
-
       setTimer(() => newTimer);
+    }
+    if (props === "PAUSE") {
+      clearInterval(timer!);
+      setTimer(null);
+    }
+    if (props === "RESET") {
+      clearInterval(timer!);
+      setTimer(null);
+      setTime("00 : 00");
+      setMin(0);
+      setSec(1);
     }
   };
 
@@ -47,7 +57,7 @@ export const Pomodotory = () => {
       }}
     >
       <View>
-        <Text style={styles.title}>Pomodotory</Text>
+        <Title>Pomodotory</Title>
       </View>
       <AnimatedCircularProgress
         size={330}
@@ -67,7 +77,7 @@ export const Pomodotory = () => {
         {time}
       </Text>
       <View id="text-section" style={{ flexDirection: "row", gap: 20 }}>
-        <Text style={{ ...styles.title, fontSize: 20 }}>Pomodoro</Text>
+        <Text style={{ ...styles.title, fontSize: 20 }}>Work</Text>
         <Text style={{ ...styles.title, fontSize: 20 }}>Short Break</Text>
         <Text style={{ ...styles.title, fontSize: 20 }}>Long Break</Text>
       </View>
@@ -75,7 +85,8 @@ export const Pomodotory = () => {
         id="button-section"
         style={{
           flexDirection: "row",
-          gap: 20,
+          gap: 15,
+          marginBottom: 20,
         }}
       >
         <Pressable
@@ -84,7 +95,7 @@ export const Pomodotory = () => {
             buttonHandler("START");
           }}
         >
-          <Text style={styles.stateButtonText}>start</Text>
+          <Text style={styles.stateButtonText}>START</Text>
         </Pressable>
         <Pressable
           style={styles.stateButton}
@@ -92,7 +103,7 @@ export const Pomodotory = () => {
             buttonHandler("PAUSE");
           }}
         >
-          <Text style={styles.stateButtonText}>start</Text>
+          <Text style={styles.stateButtonText}>PAUSE</Text>
         </Pressable>
         <Pressable
           style={styles.stateButton}
@@ -100,18 +111,26 @@ export const Pomodotory = () => {
             buttonHandler("STOP");
           }}
         >
-          <Text style={styles.stateButtonText}>start</Text>
+          <Text style={styles.stateButtonText}>RESET</Text>
         </Pressable>
       </View>
       <View id="cycle-section">
         <Text style={{ ...styles.title, fontSize: 20 }}>Cycle : #{cycle}</Text>
       </View>
-      <View id="go-to">
-        <Text style={{ ...styles.title, fontSize: 20 }}>Go to ...</Text>
-      </View>
     </View>
   );
 };
+
+const Title = styled(Text)`
+  color: #fff;
+  font-size: 50px;
+  font-weight: bold;
+  margin-bottom: 30px;
+  font-style: italic;
+  text-shadow-radius: 2px;
+  text-shadow-color: #0003;
+  text-shadow-offset: 2px 2px;
+`;
 
 const styles = StyleSheet.create({
   container: {
@@ -137,7 +156,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     fontStyle: "italic",
     textShadowRadius: 2,
-    textShadowColor: "#000",
+    textShadowColor: "#0003",
     textShadowOffset: { width: 2, height: 2, opacity: 0.1 },
   },
   stateButton: {
